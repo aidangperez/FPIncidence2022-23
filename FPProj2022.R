@@ -31,6 +31,7 @@ table(capture_data$Fibropapilloma.Visible, useNA = "ifany")  #confirm that issue
 
 #remove "NA" values 
 capture_data$Fibropapilloma.Visible <- filter(!is.na(Fibropapilloma.Visible))
+capture_data <- capture_data[!(is.na(capture_data$Fibropapilloma.Visible) | capture_data$Fibropapilloma.Visible==""), ]
 table(capture_data$Fibropapilloma.Visible)
 
 #isolate by region and by species (Chelonia mydas)
@@ -45,6 +46,37 @@ CRCD <- capture_data %>%
 table(CRCD$Site) #Should only contain region specific data
 table(CRCD$Fibropapilloma.Visible) #should have no NA, consistent "No" spelling
 table(CRCD$Species) #should only include Cm
+table(CRCD$Year)
 
-##### stack bar graph of visibility 
+##################
+### Data Plots ###
+##################
+
+### stack bar graph of visibility 
+
+stackbg <- ggplot(data = CRCD, aes(Year, fill = Fibropapilloma.Visible )) +
+  theme_linedraw() +
+  scale_x_continuous(breaks = c(2016, 2017, 2018, 2019, 2020, 2021, 2022)) + 
+  scale_y_continuous(breaks = scales :: pretty_breaks(n = 10)) + 
+  geom_bar()
+
+stackbg #generates a stacked bar graph of "Yes" and "No" values, Y axis on counts
+
+### stack bar graph of visibility, normalized proportionally
+
+propsum<- CRCD %>%
+  group_by(Year, Fibropapilloma.Visible) %>%
+  tally() %>%
+  drop_na() %>%
+  group_by(Year) %>%
+  mutate(total.N = sum(n),
+         prop = n / total.N)
+
+stackbg_prop <- ggplot(data = propsum, aes(Year, prop, fill = Fibropapilloma.Visible )) +
+  theme_linedraw() +
+  scale_x_continuous(breaks = c(2016, 2017, 2018, 2019, 2020, 2021, 2022)) + 
+  scale_y_continuous(label = scales::percent) + 
+  geom_col()
+
+stackbg_prop #generates a stacked bar graph, normalized grouping of "Yes" and "No" values, Y axis on proportion percentages
 
