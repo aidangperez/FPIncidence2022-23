@@ -58,6 +58,7 @@ stackbg <- ggplot(data = CRCD, aes(Year, fill = Fibropapilloma.Visible )) +
   theme_linedraw() +
   scale_x_continuous(breaks = c(2016, 2017, 2018, 2019, 2020, 2021, 2022)) + 
   scale_y_continuous(breaks = scales :: pretty_breaks(n = 10)) + 
+  ggtitle("Crystal River") +
   geom_bar()
 
 stackbg #generates a stacked bar graph of "Yes" and "No" values, Y axis on counts
@@ -76,7 +77,23 @@ stackbg_prop <- ggplot(data = propsum, aes(Year, prop, fill = Fibropapilloma.Vis
   theme_linedraw() +
   scale_x_continuous(breaks = c(2016, 2017, 2018, 2019, 2020, 2021, 2022)) + 
   scale_y_continuous(label = scales::percent) + 
+  ggtitle("Crystal River") +
   geom_col()
 
 stackbg_prop #generates a stacked bar graph, normalized grouping of "Yes" and "No" values, Y axis on proportion percentages
+
+###############
+### Mapping ###
+###############
+
+
+##############
+### Export ###
+##############
+
+### note to edit titles in graph, final folder destination, plot, and file title prior to export
+
+ggsave("stackbg_prop_CRYSTAL.pdf", plot = stackbg_prop,
+       path = "/Users/aidanperez/Documents/FP_proj_2022/Plots/Crystal River")
+
 
