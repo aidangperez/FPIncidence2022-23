@@ -47,25 +47,47 @@ table(CRCD$Site) #Should only contain region specific data
 table(CRCD$Fibropapilloma.Visible) #should have no NA, consistent "No" spelling
 table(CRCD$Species) #should only include Cm
 table(CRCD$Year)
+table(CRCD$Season)
+table(CRCD$SCL.Standard.cm)
 
 ##################
 ### Data Plots ###
 ##################
 
-### stack bar graph of visibility 
+### stack bar graph of visibility by year 
 
-stackbg <- ggplot(data = CRCD, aes(Year, fill = Fibropapilloma.Visible )) +
+stackbg_Y <- ggplot(data = CRCD, aes(Year, fill = Fibropapilloma.Visible )) +
   theme_linedraw() +
   scale_x_continuous(breaks = c(2016, 2017, 2018, 2019, 2020, 2021, 2022)) + 
   scale_y_continuous(breaks = scales :: pretty_breaks(n = 10)) + 
   ggtitle("Crystal River") +
   geom_bar()
 
-stackbg #generates a stacked bar graph of "Yes" and "No" values, Y axis on counts
+stackbg_Y #generates a stacked bar graph of "Yes" and "No" values by year, Y axis on counts
 
-### stack bar graph of visibility, normalized proportionally
+### stack bar graph of visibility, by season
 
-propsum<- CRCD %>%
+stackbg_S <- ggplot(data = CRCD, aes(Season, fill = Fibropapilloma.Visible )) +
+  theme_linedraw() +
+  scale_y_continuous(breaks = scales :: pretty_breaks(n = 10)) + 
+  ggtitle("Crystal River") +
+  geom_bar()
+
+stackbg_S #generates a stacked bar graph of "Yes" and "No" values by season, Y axis on counts 
+
+### histogram of visibility, by SCL
+
+histo_SCL <- ggplot(data = CRCD, aes(SCL.Standard.cm, fill = Fibropapilloma.Visible)) +
+  geom_histogram(bins = 10) +
+  scale_x_continuous(breaks = scales :: pretty_breaks(n = 10)) +
+  theme_linedraw() + 
+  ggtitle("Crystal River")
+
+histo_SCL #generates a stacked histogram of "Yes" and "No" values by SCL, Y axis on counts
+
+### stack bar graph of visibility by year, normalized proportionally
+
+propsumYEAR<- CRCD %>%
   group_by(Year, Fibropapilloma.Visible) %>%
   tally() %>%
   drop_na() %>%
@@ -73,14 +95,44 @@ propsum<- CRCD %>%
   mutate(total.N = sum(n),
          prop = n / total.N)
 
-stackbg_prop <- ggplot(data = propsum, aes(Year, prop, fill = Fibropapilloma.Visible )) +
+stackbg_prop <- ggplot(data = propsumYEAR, aes(Year, prop, fill = Fibropapilloma.Visible )) +
   theme_linedraw() +
   scale_x_continuous(breaks = c(2016, 2017, 2018, 2019, 2020, 2021, 2022)) + 
   scale_y_continuous(label = scales::percent) + 
   ggtitle("Crystal River") +
   geom_col()
 
-stackbg_prop #generates a stacked bar graph, normalized grouping of "Yes" and "No" values, Y axis on proportion percentages
+stackbg_Y_prop #generates a stacked bar graph, normalized grouping of "Yes" and "No" values, Y axis on proportion percentages, by year
+
+#### stack bar graph of visibility by Season, normalized proportionally
+
+propsumSEAS<- CRCD %>%
+  group_by(Season, Fibropapilloma.Visible) %>%
+  tally() %>%
+  drop_na() %>%
+  group_by(Season) %>%
+  mutate(total.N = sum(n),
+         prop = n / total.N)
+
+stackbg_S_prop <- ggplot(data = propsumSEAS, aes(Season, prop, fill = Fibropapilloma.Visible )) +
+  theme_linedraw() +
+  scale_y_continuous(labels = scales :: percent) + 
+  ggtitle("Crystal River") +
+  geom_col()
+
+stackbg_S_prop #generates a stacked bar graph of "Yes" and "No" values, Y axis on proportion percentages, by season
+
+### stack bar graph of visibility by SCL, normalized proportionally
+
+histo_SCL_prop <- ggplot(data = CRCD, aes(SCL.Standard.cm, fill = Fibropapilloma.Visible)) +
+  geom_histogram(bins = 10, position = 'fill') +
+  scale_x_continuous(breaks = scales :: pretty_breaks(n = 10)) +
+  scale_y_continuous(labels = scales :: percent) +
+  theme_linedraw() + 
+  ggtitle("Crystal River")
+
+histo_SCL_prop #generates a stacked histogram of "yes" and "No" values, Y axis on proportion percentages, by SCL
+
 
 ###############
 ### Mapping ###
@@ -93,7 +145,7 @@ stackbg_prop #generates a stacked bar graph, normalized grouping of "Yes" and "N
 
 ### note to edit titles in graph, final folder destination, plot, and file title prior to export
 
-ggsave("stackbg_prop_CRYSTAL.pdf", plot = stackbg_prop,
+ggsave("histo_SCL_prop_CRYSTAL.pdf", plot = histo_SCL_prop,
        path = "/Users/aidanperez/Documents/FP_proj_2022/Plots/Crystal River")
 
 
