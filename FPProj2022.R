@@ -95,7 +95,7 @@ propsumYEAR<- CRCD %>%
   mutate(total.N = sum(n),
          prop = n / total.N)
 
-stackbg_prop <- ggplot(data = propsumYEAR, aes(Year, prop, fill = Fibropapilloma.Visible )) +
+stackbg_Y_prop <- ggplot(data = propsumYEAR, aes(Year, prop, fill = Fibropapilloma.Visible )) +
   theme_linedraw() +
   scale_x_continuous(breaks = c(2016, 2017, 2018, 2019, 2020, 2021, 2022)) + 
   scale_y_continuous(label = scales::percent) + 
