@@ -1,6 +1,8 @@
 #################################
 ### FP Incidence Project 2022 ###
-#################################
+##################################################################
+### Marine Turtle Conservation Lab at Florida State University ###
+##################################################################
 
 ###load packages 
 library(git2r)
@@ -49,6 +51,18 @@ table(CRCD$Species) #should only include Cm
 table(CRCD$Year)
 table(CRCD$Season)
 table(CRCD$SCL.Standard.cm)
+table(CRCD$FP.Balazs.Score)
+
+### summary data function script 
+#summary data
+sum_data <- function(y, upper_limit = max(11)) {
+  return( 
+    data.frame(
+      y = 0.95 * upper_limit,
+      label = paste('n =', length(y), '\n',
+                    'x̄ =', round(mean(y), 1), '\n')))
+}
+
 
 ##################
 ### Data Plots ###
@@ -133,6 +147,48 @@ histo_SCL_prop <- ggplot(data = CRCD, aes(SCL.Standard.cm, fill = Fibropapilloma
 
 histo_SCL_prop #generates a stacked histogram of "yes" and "No" values, Y axis on proportion percentages, by SCL
 
+### plot of FP Balazs scores by year (with linear regression)
+
+balazs_plot_year <- ggplot(CRCD, aes(Year,  FP.Balazs.Score)) +
+  theme_linedraw() +
+  geom_jitter(shape = 5,
+              size = 3, stroke = 1,
+              width = .2, height = .2) +
+  scale_y_continuous(breaks = scales :: pretty_breaks(n=12)) +
+  geom_smooth(method = "lm", se = T, col = "#ed3737", alpha = .3) +
+  ggtitle("Crystal River") +
+  stat_summary(fun.data = sum_data, geom = "text")
+
+balazs_plot_year #generates a graph of plots detailing FP balazs score metric compared to capture years, with a standard linear regression imposed
+
+### plot of FP Balazs scores by season 
+
+balazs_plot_season <- ggplot(CRCD, aes(Season,  FP.Balazs.Score)) +
+  theme_linedraw() +
+  geom_jitter(shape = 5,
+              size = 3, stroke = 1,
+              width = .2, height = .2) +
+  scale_y_continuous(breaks = scales :: pretty_breaks(n=12)) +
+  geom_smooth(method = "lm", se = T, col = "#ed3737", alpha = .3) +
+  ggtitle("Crystal River") +
+  stat_summary(fun.data = sum_data, geom = "text")
+
+balazs_plot_season #generates a graph of plots detailing FP balazs score metric compared to capture seasons
+
+### plot of FP Balazs scores by SCL (with linear regression)
+
+balazs_plot_SCL <- ggplot(CRCD, aes(SCL.Standard.cm,  FP.Balazs.Score)) +
+  theme_linedraw() +
+  geom_jitter(shape = 5,
+              size = 3, stroke = 1,
+              width = .2, height = .2) +
+  scale_y_continuous(breaks = scales :: pretty_breaks(n=12)) +
+  scale_x_continuous(breaks = scales :: pretty_breaks(n = 20)) +
+  xlim(25, 60) +
+  geom_smooth(method = "lm", se = T, col = "#ed3737", alpha = .3) +
+  ggtitle("Crystal River")
+
+balazs_plot_SCL #generates a graph of plots detailing FP balazs score metric compared to SCL
 
 ###############
 ### Mapping ###
@@ -145,7 +201,7 @@ histo_SCL_prop #generates a stacked histogram of "yes" and "No" values, Y axis o
 
 ### note to edit titles in graph, final folder destination, plot, and file title prior to export
 
-ggsave("histo_SCL_prop_CRYSTAL.pdf", plot = histo_SCL_prop,
+ggsave("balazs_plot_SCLCR.pdf", plot = balazs_plot_SCL,
        path = "/Users/aidanperez/Documents/FP_proj_2022/Plots/Crystal River")
 
 
