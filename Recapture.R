@@ -55,8 +55,19 @@ table(CRCD$SCL.Standard.cm)
 table(CRCD$FP.Balazs.Score)
 table(CRCD$Tags)
 table(CRCD$Flipper.Tag.1)
+table(CRCD$Flipper.Tag.2)
 
-#filter such that only repeated tag values are kept, presuming these were recaptured
-CRCD %>% 
-  distinct(Flipper.Tag.1, .keep_all = TRUE)
-table(CRCD$Flipper.Tag.1)
+#filter such that only repeated tag values are kept, presuming these were recaptured (and remove too small entries)
+Recaps <- CRCD %>% 
+  group_by(Flipper.Tag.1) %>%
+  filter(!grepl('TOO SMALL', Flipper.Tag.1)) %>%
+  filter(n()>1) %>% 
+  group_by(Flipper.Tag.2) %>%
+  filter(!grepl('TOO SMALL', Flipper.Tag.2)) %>%
+  filter(n()>1) 
+
+table(Recaps$Flipper.Tag.1)
+table(Recaps$Flipper.Tag.2)
+
+#verify consistency with Flipper.Tag.2 column
+
