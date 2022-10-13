@@ -44,7 +44,6 @@ table(capture_data$Site)
 table(capture_data$Species)
 table(capture_data$Tags)
 CRCD <- capture_data %>% 
-  filter(grepl('Bimini, Bahamas', Site)) %>% #call different site for different data set
   filter(grepl('Cm', Species))
 
 #verify modifications worked 
@@ -53,11 +52,13 @@ table(CRCD$Fibropapilloma.Visible) #should have no NA, consistent "No" spelling
 table(CRCD$Species) #should only include Cm
 table(CRCD$FP.Balazs.Score)
 
+#######################
+### Bimini, Bahamas ###
 ### Import Bahamas shapefile 
 bahamas <- st_read ("/Users/aidanperez/Documents/FP_proj_2022/Datasets/map/data/BHS_adm1.shp")
 
 ### Plot of captures and visibility on North and South Bimini
-plotNS1 <- ggplot()+
+plotBimNS1 <- ggplot()+
   geom_sf(data = bahamas, fill = "grey") +
   geom_point(data = CRCD, aes(x = GPS_X, y = GPS_Y, color = factor(Fibropapilloma.Visible)), size = 1) +
   ggtitle("Plot of Captures and Visibility; North and South Bimini") +
@@ -66,10 +67,10 @@ plotNS1 <- ggplot()+
   ylim(25.61,25.8) +
   coord_sf() 
 
-plotNS1
+plotBimNS1
 
 ### Plot of North Bimini with affected FP
-plotN2 <- ggplot()+
+plotBimN2 <- ggplot()+
   geom_sf(data = bahamas, fill = "grey") +
   geom_point(data = CRCD, aes(x = GPS_X, y = GPS_Y, color = factor(Fibropapilloma.Visible)), size = 1) +
   ggtitle("Plot of Captures and Visibility; North Bimini") +
@@ -78,7 +79,11 @@ plotN2 <- ggplot()+
   ylim(25.72,25.78) +
   coord_sf() 
 
-plotN2
+plotBimN2
+
+########################################
+### Crystal River, Fl, United States ###
+### Import Florida shapefile 
 
   
  
