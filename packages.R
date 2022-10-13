@@ -17,7 +17,8 @@ install.packages(c (
   "cowplot",
   "rcartocolor",
   "magick",
-  "git2r"
+  "git2r",
+  "sp"
 ))
 
 devtools::install_github("ropenscilabs/rnaturalearth")
