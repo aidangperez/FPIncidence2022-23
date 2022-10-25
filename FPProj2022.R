@@ -190,10 +190,6 @@ balazs_plot_SCL <- ggplot(CRCD, aes(SCL.Standard.cm,  FP.Balazs.Score)) +
 
 balazs_plot_SCL #generates a graph of plots detailing FP balazs score metric compared to SCL
 
-###############
-### Mapping ###
-###############
-
 
 ##############
 ### Export ###

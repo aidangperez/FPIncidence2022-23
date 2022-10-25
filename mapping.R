@@ -51,11 +51,13 @@ table(CRCD$Site) #Should only contain region specific data
 table(CRCD$Fibropapilloma.Visible) #should have no NA, consistent "No" spelling
 table(CRCD$Species) #should only include Cm
 table(CRCD$FP.Balazs.Score)
+table(CRCD$Year)
 
 #######################
 ### Bimini, Bahamas ###
+#######################
 ### Import Bahamas shapefile 
-bahamas <- st_read ("/Users/aidanperez/Documents/FP_proj_2022/Datasets/map/data/BHS_adm1.shp")
+bahamas <- st_read ("/Users/aidanperez/Documents/FP_proj_2022/Datasets/map/bhs_adm0_shape/BHS_adm0.shp")
 
 ### Plot of captures and visibility on North and South Bimini
 plotBimNS1 <- ggplot()+
@@ -81,9 +83,61 @@ plotBimN2 <- ggplot()+
 
 plotBimN2
 
+### Plot of North Bimini with FP severity (Balazs score)
+plotBimSevN2 <- ggplot()+
+  geom_sf(data = bahamas, fill = "grey") +
+  scale_color_brewer(palette = "YlOrRd") +
+  geom_point(data = CRCD, aes(x = GPS_X, y = GPS_Y, color = factor(FP.Balazs.Score)), size = 1) +
+  ggtitle("Plot of FP Severity (Balazs Score); North Bimini") +
+  theme_bw() +
+  xlim(-79.27,-79.24) +
+  ylim(25.73,25.76) +
+  coord_sf() 
+
+plotBimSevN2
+
+### Plot of North Bimini with FP severity - Year 2016 #######this needs to be revised 
+plotBimSevN22016 <- ggplot() +
+  geom_sf(data = bahamas, fill = "grey") +
+  scale_color_brewer(palette = "YlOrRd") +
+  geom_point(data = CRCD, aes(x = GPS_X, y = GPS_Y, color = factor(Year, 2016)), size = 2) +
+  ggtitle("Plot of FP Severity (Balazs Score); North Bimini ; Year 2016") +
+  theme_bw() +
+  xlim(-79.27,-79.24) +
+  ylim(25.73,25.76) +
+  coord_sf() 
+
+plotBimSevN22016
+
 ########################################
 ### Crystal River, Fl, United States ###
+########################################
 ### Import Florida shapefile 
+florida <- st_read("/Users/aidanperez/Documents/FP_proj_2022/Datasets/map/fl_shapefile/Florida_Shoreline_(1_to_40%2C000_Scale).shp")
 
-  
- 
+### Plot of captures and visibility in Crytal River
+plotFL <- ggplot()+
+  geom_sf(data = florida, fill = "grey") +
+  geom_point(data = CRCD, aes(x = GPS_X, y = GPS_Y, color = factor(Fibropapilloma.Visible)), size = 2) +
+  ggtitle("Plot of Captures and Visibility; Florida") +
+  theme_bw() +
+  xlim(-82.82,-82.67) +
+  ylim(28.7, 28.85) + 
+  coord_sf()
+
+plotFL
+
+
+### Plot of Crystal River FP severity
+plotFLSev <- ggplot()+
+  geom_sf(data = florida, fill = "grey") +
+  scale_color_brewer(palette = "YlOrRd") + 
+  geom_point(data = CRCD, aes(x = GPS_X, y = GPS_Y, color = factor(FP.Balazs.Score)), size = 2) +
+  ggtitle("Plot of Captures and Visibility; Florida") +
+  theme_bw() +
+  xlim(-82.82,-82.67) +
+  ylim(28.7, 28.85) + 
+  coord_sf()
+
+plotFLSev
+
