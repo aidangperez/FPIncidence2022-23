@@ -40,7 +40,7 @@ table(capture_data$Fibropapilloma.Visible)
 table(capture_data$Site)
 table(capture_data$Species)
 CRCD <- capture_data %>% 
-  filter(grepl('Crystal River, FL, USA', Site)) %>% #call different site for different data set
+  filter(grepl('Bimini, Bahamas', Site)) %>% #call different site for different data set
   filter(grepl('Cm', Species))
 
 
@@ -190,6 +190,16 @@ balazs_plot_SCL <- ggplot(CRCD, aes(SCL.Standard.cm,  FP.Balazs.Score)) +
 
 balazs_plot_SCL #generates a graph of plots detailing FP balazs score metric compared to SCL
 
+################################################################
+### North and South Bimini Visibility Qualitative Comparison ###
+################################################################
+
+# plot a count comparing # of turtles in north and south bimini distinctively (use some kind of y coordinate filter)
+# plot just north bimini visibilty
+# plot just north bimini severity 
+# plot just south bimini visibilty
+# plot just south bimini severity 
+
 
 ##############
 ### Export ###
@@ -199,5 +209,7 @@ balazs_plot_SCL #generates a graph of plots detailing FP balazs score metric com
 
 ggsave("balazs_plot_SCLCR.pdf", plot = balazs_plot_SCL,
        path = "/Users/aidanperez/Documents/FP_proj_2022/Plots/Crystal River")
+
+table(CRCD$Fibropapilloma.Visible)
 
 
