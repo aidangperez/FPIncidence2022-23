@@ -40,7 +40,7 @@ table(capture_data$Fibropapilloma.Visible)
 table(capture_data$Site)
 table(capture_data$Species)
 CRCD <- capture_data %>% 
-  filter(grepl('Bimini, Bahamas', Site)) %>% #call different site for different data set
+  filter(grepl('Ilha Das Cobras, Brazil', Site)) %>% #call different site for different data set
   filter(grepl('Cm', Species))
 
 
@@ -63,6 +63,11 @@ sum_data <- function(y, upper_limit = max(11)) {
                     'x̄ =', round(mean(y), 1), '\n')))
 }
 
+### Split North and South Bimini regions, Andros Region
+
+SouthBimCRCD <- filter(CRCD, Location == 'South Bimini')
+NorthBimCRCD <- filter(CRCD, Location == 'Bonefish Hole')
+AndrosCRCD <- filter(CRCD, Site == "Andros, Bahamas")
 
 ##################
 ### Data Plots ###
@@ -74,7 +79,7 @@ stackbg_Y <- ggplot(data = CRCD, aes(Year, fill = Fibropapilloma.Visible )) +
   theme_linedraw() +
   scale_x_continuous(breaks = c(2016, 2017, 2018, 2019, 2020, 2021, 2022)) + 
   scale_y_continuous(breaks = scales :: pretty_breaks(n = 10)) + 
-  ggtitle("Crystal River") +
+  ggtitle("Ilha Das Cobras, Brazil") +
   geom_bar()
 
 stackbg_Y #generates a stacked bar graph of "Yes" and "No" values by year, Y axis on counts
@@ -84,7 +89,7 @@ stackbg_Y #generates a stacked bar graph of "Yes" and "No" values by year, Y axi
 stackbg_S <- ggplot(data = CRCD, aes(Season, fill = Fibropapilloma.Visible )) +
   theme_linedraw() +
   scale_y_continuous(breaks = scales :: pretty_breaks(n = 10)) + 
-  ggtitle("Crystal River") +
+  ggtitle("Ilha Das Cobras, Brazil") +
   geom_bar()
 
 stackbg_S #generates a stacked bar graph of "Yes" and "No" values by season, Y axis on counts 
@@ -95,7 +100,7 @@ histo_SCL <- ggplot(data = CRCD, aes(SCL.Standard.cm, fill = Fibropapilloma.Visi
   geom_histogram(bins = 10) +
   scale_x_continuous(breaks = scales :: pretty_breaks(n = 10)) +
   theme_linedraw() + 
-  ggtitle("Crystal River")
+  ggtitle("Ilha Das Cobras, Brazil")
 
 histo_SCL #generates a stacked histogram of "Yes" and "No" values by SCL, Y axis on counts
 
@@ -113,7 +118,7 @@ stackbg_Y_prop <- ggplot(data = propsumYEAR, aes(Year, prop, fill = Fibropapillo
   theme_linedraw() +
   scale_x_continuous(breaks = c(2016, 2017, 2018, 2019, 2020, 2021, 2022)) + 
   scale_y_continuous(label = scales::percent) + 
-  ggtitle("Crystal River") +
+  ggtitle("Ilha Das Cobras, Brazil") +
   geom_col()
 
 stackbg_Y_prop #generates a stacked bar graph, normalized grouping of "Yes" and "No" values, Y axis on proportion percentages, by year
@@ -131,7 +136,7 @@ propsumSEAS<- CRCD %>%
 stackbg_S_prop <- ggplot(data = propsumSEAS, aes(Season, prop, fill = Fibropapilloma.Visible )) +
   theme_linedraw() +
   scale_y_continuous(labels = scales :: percent) + 
-  ggtitle("Crystal River") +
+  ggtitle("Ilha Das Cobras, Brazil") +
   geom_col()
 
 stackbg_S_prop #generates a stacked bar graph of "Yes" and "No" values, Y axis on proportion percentages, by season
@@ -143,7 +148,7 @@ histo_SCL_prop <- ggplot(data = CRCD, aes(SCL.Standard.cm, fill = Fibropapilloma
   scale_x_continuous(breaks = scales :: pretty_breaks(n = 10)) +
   scale_y_continuous(labels = scales :: percent) +
   theme_linedraw() + 
-  ggtitle("Crystal River")
+  ggtitle("Ilha Das Cobras, Brazil")
 
 histo_SCL_prop #generates a stacked histogram of "yes" and "No" values, Y axis on proportion percentages, by SCL
 
@@ -156,7 +161,7 @@ balazs_plot_year <- ggplot(CRCD, aes(Year,  FP.Balazs.Score)) +
               width = .2, height = .2) +
   scale_y_continuous(breaks = scales :: pretty_breaks(n=12)) +
   geom_smooth(method = "lm", se = T, col = "#ed3737", alpha = .3) +
-  ggtitle("Crystal River") +
+  ggtitle("Ilha Das Cobras, Brazil") +
   stat_summary(fun.data = sum_data, geom = "text")
 
 balazs_plot_year #generates a graph of plots detailing FP balazs score metric compared to capture years, with a standard linear regression imposed
@@ -170,7 +175,7 @@ balazs_plot_season <- ggplot(CRCD, aes(Season,  FP.Balazs.Score)) +
               width = .2, height = .2) +
   scale_y_continuous(breaks = scales :: pretty_breaks(n=12)) +
   geom_smooth(method = "lm", se = T, col = "#ed3737", alpha = .3) +
-  ggtitle("Crystal River") +
+  ggtitle("Ilha Das Cobras, Brazil") +
   stat_summary(fun.data = sum_data, geom = "text")
 
 balazs_plot_season #generates a graph of plots detailing FP balazs score metric compared to capture seasons
@@ -186,7 +191,7 @@ balazs_plot_SCL <- ggplot(CRCD, aes(SCL.Standard.cm,  FP.Balazs.Score)) +
   scale_x_continuous(breaks = scales :: pretty_breaks(n = 20)) +
   xlim(25, 60) +
   geom_smooth(method = "lm", se = T, col = "#ed3737", alpha = .3) +
-  ggtitle("Crystal River")
+  ggtitle("Ilha Das Cobras, Brazil")
 
 balazs_plot_SCL #generates a graph of plots detailing FP balazs score metric compared to SCL
 
@@ -195,10 +200,67 @@ balazs_plot_SCL #generates a graph of plots detailing FP balazs score metric com
 ################################################################
 
 # plot a count comparing # of turtles in north and south bimini distinctively (use some kind of y coordinate filter)
+
 # plot just north bimini visibilty
+propsumYEARNBIM <- NorthBimCRCD %>%
+  group_by(Year, Fibropapilloma.Visible) %>%
+  tally() %>%
+  drop_na() %>%
+  group_by(Year) %>%
+  mutate(total.N = sum(n),
+         prop = n / total.N)
+
+stackbg_Y_prop_NorthBimini <- ggplot(data = propsumYEARNBIM, aes(Year, prop, fill = Fibropapilloma.Visible )) +
+  theme_linedraw() +
+  scale_x_continuous(breaks = c(2016, 2017, 2018, 2019, 2020, 2021, 2022)) + 
+  scale_y_continuous(label = scales::percent) + 
+  ggtitle("North Bimini Exclusive") +
+  geom_col()
+
+stackbg_Y_prop_NorthBimini
+
 # plot just north bimini severity 
+balazs_plot_yearNBim <- ggplot(NorthBimCRCD, aes(Year,  FP.Balazs.Score)) +
+  theme_linedraw() +
+  geom_jitter(shape = 5,
+              size = 3, stroke = 1,
+              width = .2, height = .2) +
+  scale_y_continuous(breaks = scales :: pretty_breaks(n=12)) +
+  geom_smooth(method = "lm", se = T, col = "#ed3737", alpha = .3) +
+  ggtitle("North Bimini Exclusive") +
+  stat_summary(fun.data = sum_data, geom = "text")
+
+balazs_plot_yearNBim
 # plot just south bimini visibilty
+propsumYEARSBIM <- SouthBimCRCD %>%
+  group_by(Year, Fibropapilloma.Visible) %>%
+  tally() %>%
+  drop_na() %>%
+  group_by(Year) %>%
+  mutate(total.N = sum(n),
+         prop = n / total.N)
+
+stackbg_Y_prop_SouthBimini <- ggplot(data = propsumYEARSBIM, aes(Year, prop, fill = Fibropapilloma.Visible )) +
+  theme_linedraw() +
+  scale_x_continuous(breaks = c(2016, 2017, 2018, 2019, 2020, 2021, 2022)) + 
+  scale_y_continuous(label = scales::percent) + 
+  ggtitle("South Bimini Exclusive") +
+  geom_col()
+
+stackbg_Y_prop_SouthBimini
+
 # plot just south bimini severity 
+balazs_plot_yearSBim <- ggplot(SouthBimCRCD, aes(Year,  FP.Balazs.Score)) +
+  theme_linedraw() +
+  geom_jitter(shape = 5,
+              size = 3, stroke = 1,
+              width = .2, height = .2) +
+  scale_y_continuous(breaks = scales :: pretty_breaks(n=12)) +
+  geom_smooth(method = "lm", se = T, col = "#ed3737", alpha = .3) +
+  ggtitle("South Bimini Exclusive") +
+  stat_summary(fun.data = sum_data, geom = "text")
+
+balazs_plot_yearSBim
 
 
 ##############
