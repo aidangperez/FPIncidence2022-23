@@ -40,7 +40,7 @@ table(capture_data$Fibropapilloma.Visible)
 table(capture_data$Site)
 table(capture_data$Species)
 CRCD <- capture_data %>% 
-  filter(grepl('Ilha Das Cobras, Brazil', Site)) %>% #call different site for different data set
+  filter(grepl('Bimini, Bahamas', Site)) %>% #call different site for different data set
   filter(grepl('Cm', Species))
 
 
@@ -194,6 +194,21 @@ balazs_plot_SCL <- ggplot(CRCD, aes(SCL.Standard.cm,  FP.Balazs.Score)) +
   ggtitle("Ilha Das Cobras, Brazil")
 
 balazs_plot_SCL #generates a graph of plots detailing FP balazs score metric compared to SCL
+#################################
+### Ilha Das Cobras Biometric ###
+#################################
+
+idcb_CCL_plot <- ggplot(CRCD, aes(SCL.Standard.cm,  FP.Balazs.Score)) +
+  theme_linedraw() +
+  geom_jitter(shape = 5,
+              size = 3, stroke = 1,
+              width = .2, height = .2) +
+  scale_y_continuous(breaks = scales :: pretty_breaks(n=12)) +
+  scale_x_continuous(breaks = scales :: pretty_breaks(n = 20)) +
+  xlim(25, 60) +
+  geom_smooth(method = "lm", se = T, col = "#ed3737", alpha = .3) +
+  ggtitle("Ilha Das Cobras, Brazil")
+
 
 ################################################################
 ### North and South Bimini Visibility Qualitative Comparison ###
