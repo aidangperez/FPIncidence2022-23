@@ -48,6 +48,8 @@ CRCDBIM <- CRCD %>%
   filter(grepl('Bimini, Bahamas', Site))
 CRCDCR <- CRCD %>% 
   filter(grepl('Crystal River, FL, USA', Site))
+CRCDBFH <- CRCD %>%
+  filter(grepl('Bonefish Hole', Location))
 
 #load shape files
 florida <- st_read("/Users/aidanperez/Documents/FP_proj_2022/Datasets/map/fl_shapefile/Florida_Shoreline_(1_to_40%2C000_Scale).shp")
@@ -101,7 +103,7 @@ maplgCR <- ggplot() +
   guides(color = guide_legend(title = "Fibropapilloma Visiblity")) + 
   labs(x = "Longitude", 
        y = "Latitude",
-       title = "Fibropapillomatosis Visiblity in Crystal River 2016-2021") +
+       title = "FP Visiblity in Crystal River 2016-2022") +
   xlim(-82.82,-82.67) +
   ylim(28.7, 28.85) + 
   coord_sf()
@@ -137,7 +139,7 @@ maplgBIM <- ggplot() +
   guides(color = guide_legend(title = "Fibropapilloma Visiblity")) + 
   labs(x = "Longitude", 
        y = "Latitude",
-       title = "Fibropapillomatosis Visiblity in Bimini 2016-2018 - Mapped") +
+       title = "FP Visiblity in Bimini 2016-2018") +
   xlim(-79.34,-79.21) +
   ylim(25.65,25.77) +
   coord_sf()
@@ -183,7 +185,7 @@ stack_propCR <- ggplot(fp_year_summ, aes(Year, prop, fill = Fibropapilloma.Visib
   scale_y_continuous(label = scales::percent ) + 
   labs(x = "",
        y = "Proportion of Turtles",
-       title = "Fibropapillomatosis Visiblity in Crystal River 2016-2022 - Mapped" )
+       title = "FP Visiblity in Crystal River 2016-2022")
 
 stack_propCR
 
@@ -222,9 +224,47 @@ stack_propBIM <- ggplot(fp_year_summ2, aes(Year, prop, fill = Fibropapilloma.Vis
   scale_y_continuous(label = scales::percent ) + 
   labs(x = "",
        y = "Proportion of Turtles",
-       title = "Fibropapillomatosis Visiblity in Bimini 2016-2018" )
+       title = "FP Visiblity in Bimini Overall 2016-2018" )
 
 stack_propBIM
+
+# plotting counts of Bonefish 
+fp_visibility2 <- CRCDBFH %>%
+  group_by(Year,Fibropapilloma.Visible) %>%
+  summarise(fp_visibility = length((Fibropapilloma.Visible)))
+
+fp_year_summ2<- CRCDBFH %>%
+  group_by(Year, Fibropapilloma.Visible) %>%
+  tally() %>%
+  drop_na() %>%
+  group_by(Year) %>%
+  mutate(total.N = sum(n),
+         prop = n / total.N)
+
+blues <- c("#d1d1d1", "#09b7e3")
+
+
+stack_propBFH <- ggplot(fp_year_summ2, aes(Year, prop, fill = Fibropapilloma.Visible)) +
+  geom_col(show.legend = FALSE) +
+  scale_fill_manual("FP Visible", values = blues) +
+  theme_linedraw() + 
+  theme(#axis.title.x = element_text(size = 18, face = "bold"),
+    # axis.title = element_text(size = 12),
+    axis.title.y = element_text(face = "bold"),
+    # axis.text.x = element_text(size = 12),
+    #axis.text.y = element_text(size = 12),
+    title = element_text( face = "bold"),
+    legend.title = element_text(size = 14),
+    legend.key.size = (unit(1, 'in')),
+    legend.text = element_text(size = 14)
+  ) + 
+  scale_x_continuous( breaks = c(2016, 2017, 2018)) +
+  scale_y_continuous(label = scales::percent ) + 
+  labs(x = "",
+       y = "Proportion of Turtles",
+       title = "FP Visiblity in Bonefish Hole 2016-2018" )
+
+stack_propBFH
 
 
 # SCL Plot CR
@@ -260,6 +300,7 @@ histo_SCLBIM
 ### export
 stack_propCR
 stack_propBIM
+stack_propBFH
 maplgBIM
 maplgCR
 histo_SCLBIM
